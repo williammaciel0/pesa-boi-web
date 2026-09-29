@@ -1,0 +1,99 @@
+const express = require('express');
+const cors = require('cors');
+
+const { Pool } = require('pg');
+require('dotenv').config()
+
+const app = express()
+
+app.use(cors({origin: 'http://localhost:5173'}));
+app.use(express.json());
+
+const pool = new Pool({
+    user: process.env.DB_USER,
+    host: process.env.DB_HOST,
+    database: process.env.DB_DATABASE,
+    password: process.env.DB_PASSWORD,
+    port: process.env.DB_PORT
+});
+
+app.get("/",(req, res)=>{
+    res.send("Servidor funcionando!")
+})
+
+app.post("/cad-produtor", async(req, res)=>{
+    try{     
+        const { nome, senha } = req.body;
+        const resultado = await pool.query(`
+            insert into produtor(name_user, senha)
+            values ($1, $2) 
+            returning *    
+        `,
+        [nome, senha]
+        );
+        res.status(201).json(resultado.rows[0]);
+
+    } catch(erro){
+        console.error(erro);
+
+        res.status(500).json({
+            erro: "Erro ao cadastrar aluno"
+        });
+    }
+});
+app.post('/cad-animal', async (req, res) => {
+    try {
+        const { nome, peso, perimetro, genero, produtor_id } = req.body;
+
+        if (!nome || !perimetro || !produtor_id) {
+            return res.status(400).json({ erro: 'Dados obrigatórios ausentes' });
+        }
+
+        const definir_genero = genero === 'macho' ? true : genero === 'femea' ? false : null;
+        const resultado = await pool.query(`
+            insert into animal (nome, peso, torax, data_pesagem, genero, produtor_id)
+            values ($1, $2, $3, CURRENT_DATE, $4, $5)
+            returning *
+        `,
+        [nome, peso, perimetro, definir_genero, produtor_id]
+        );
+
+        return res.status(201).json(resultado.rows[0]);
+    } catch (erro) {
+        console.error(erro);
+        return res.status(500).json({ erro: 'Erro ao cadastrar animal' });
+    }
+})
+app.get('/animais', async(req, res)=>{
+    try {
+        const { produtor_id } = req.query;
+        const resultado = await pool.query(
+            `select * from animal where produtor_id = $1`, [produtor_id]
+        );
+        res.json(resultado.rows)
+
+    } catch (error) {
+        console.log('Erro ao buscar animais desse produtor!',error)
+    }
+});
+
+app.get('/produtor', async (req, res)=>{
+    try{
+        const { nome, senha } = req.query;
+        const result = await pool.query(
+            `select * from produtor where name_user = $1 and senha = $2`,
+            [nome, senha]
+        );
+        res.json(result.rows);
+    } catch(erro){
+        console.error(erro);
+        res.status(500).json({
+            erro: "Erro ao buscar produtor"
+        });
+    }
+
+});
+const porta = 3000;
+app.listen(porta, () => {
+    console.log(`Servidor rodando ${porta}!`)
+});
