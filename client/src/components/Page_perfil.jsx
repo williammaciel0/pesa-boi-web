@@ -1,5 +1,6 @@
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import btnSair from "../assets/icons/botao-de-energia.png"
 
 const Page__perfil = () => {
     const location = useLocation();
@@ -75,6 +76,10 @@ const Page__perfil = () => {
             }
         })
     }
+
+    function sair(){
+        navigate("/login")
+    }
     
     return (
         <div className="min-h-screen bg-stone-100 p-6">
@@ -89,46 +94,35 @@ const Page__perfil = () => {
                         Nenhum animal cadastrado para esse produtor.
                     </div>
                 ) : (
-                    <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-                        {dados.map((animal) => {
-                            const nomeAnimal = animal.nome || animal.name || animal.raca || `Animal ${animal.id}`;
-                            const campos = Object.entries(animal).filter(
-                                ([chave]) => !["id", "produtor_id"].includes(chave)
-                            );
-
-                            return (
-                                <article onClick={()=>(pageDetal(animal))} key={animal.id} className="rounded-2xl cursor-pointer bg-white p-5 shadow-sm border border-stone-200">
-                                    <div className="mb-4 flex items-center justify-between">
-                                        <div>
-                                            <p className="text-xs uppercase tracking-[0.2em] text-emerald-600">Animal</p>
-                                            <h2 className="mt-1 text-2xl font-bold text-stone-800">{nomeAnimal}</h2>
-                                        </div>
-                                        <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
-                                            #{animal.id}
-                                        </span>
-                                    </div>
-
-                                    <div className="space-y-2 text-sm text-stone-700">
-                                        {campos.map(([chave, valor]) => (
-                                            <div key={chave} className="flex justify-between gap-4 border-b border-stone-100 pb-2">
-                                                <span className="font-medium capitalize text-stone-500">
-                                                    {chave.replace(/_/g, " ")}
-                                                </span>
-                                                <span className="text-right font-semibold text-stone-800">
-                                                    {valor ?? "-"}
-                                                </span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </article>
-                            );
-                        })}
-                    </div>
+                <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+                    {dados.map((animal)=>{
+                        
+                        return(
+                        <div onClick={()=>(pageDetal(animal))} key={animal.id} className="rounded-2xl cursor-pointer bg-white p-5 shadow-sm border border-stone-200 flex justify-between" >
+                            <div className="font-bold mr-40">
+                                <p>Desc.</p>
+                                <p>Peso</p>
+                                <p>Perímetro</p>
+                                <p>Sexo</p>
+                            </div>
+                            <div className="">
+                                <p className="rounded-[3px] p-1 font-bold bg-blue-700 text-amber-50">{animal.nome}</p>
+                                <p>{animal.peso} <span className="font-bold">kg</span></p>
+                                <p>{animal.torax} <span className="font-bold">cm</span></p>
+                                <p>{animal.genero == true ? 'Macho':'Femea'}</p>
+                            </div> 
+                        </div>    
+                        )
+                    })}
+                </div>
                 )}
-               
-                    <button className="w-[300px] mt-8 self-center bg-gradient-to-r from-emerald-600 to-green-500 active:bg-[#00FF70] cursor-pointer p-4 rounded-4xl font-bold text-amber-50 transition-transform duration-150" onClick={enviarDados}>
+               <div className="flex w-[100%] justify-between items-center">
+                <button className="w-[300px] mt-8 bg-gradient-to-r from-emerald-600 to-green-500 active:bg-[#00FF70] cursor-pointer p-4 rounded-4xl font-bold text-amber-50 transition-transform duration-150" onClick={enviarDados}>
                         Novo animal
-                    </button>
+                </button>
+                <img onClick={sair} src={btnSair} width={50} className="cursor-pointer mt-8" />
+               </div>
+
 
             </div>
             

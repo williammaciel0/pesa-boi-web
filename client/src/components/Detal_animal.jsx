@@ -1,6 +1,17 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useCalculoDePeso } from '../hooks/useCalculoDePeso';
 import arrowLeft from '../assets/icons/arrow-left-svgrepo-com.svg'
+import {
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  LabelList
+} from 'recharts';
 
 const Detal_animal = ()=>{
     const location = useLocation()
@@ -8,20 +19,47 @@ const Detal_animal = ()=>{
     const perfilState = location.state ?? {};
     const animal = perfilState.animal ?? {};
 
-    const [perimetro, setPerimetro] = useState(animal.torax ?? "")
-    const [peso, setPeso] = useState("")
+    const [dados, setDados] = useState([])
+    const [perimetro, setPerimetro] = useState()
+    const [nome, setNome] = useState(animal.nome)
+    const [peso, setPeso] = useState(animal.peso)
+    const [produtor_id, setProdutor_id] = useState(animal.produtor_id ?? "")
     const [dataPesagem, setDataPesagem] = useState(animal.data_pesagem ?? "")
-
+    const [genero, setGenero] = useState(animal.genero === true ? 'macho' : 'femea')
+    
     useEffect(() => {
         setPerimetro(animal.torax ?? "")
-        setPeso("")
+        setPeso(animal.peso ?? "")
         setDataPesagem(animal.data_pesagem ?? "")
+        listarHistorico()
     }, [animal])
-
-    console.log({ peso, perimetro, dataPesagem })
 
     async function updateForm(event) {
         event.preventDefault();
+        const calcularNovoPeso = await useCalculoDePeso(perimetro, genero)
+        setPeso(calcularNovoPeso)
+        const animais = {
+            perimetro: perimetro,
+            peso: calcularNovoPeso,
+            id: animal.id
+        }
+
+        const respost = await fetch("http://localhost:3000/up-animal", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(animais)
+        });
+
+    }
+
+    async function listarHistorico(){
+        const animal_id = animal.id
+        const resposta = await fetch(`http://localhost:3000/listar-animal?animal_id=${animal_id}`)
+        const dadosApi = await resposta.json();
+        setDados(Array.isArray(dadosApi) ? dadosApi : [])
+        console.log(dadosApi)
     }
 
     function retornarAoPerfil() {
@@ -34,6 +72,11 @@ const Detal_animal = ()=>{
         });
     }
 
+    const formatarData = () => {
+        const data = new Date()
+        return data.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+    }
+   
     return(
         <>
          <div className="flex justify-between items-center w-full p-4 shadow-md">
@@ -41,12 +84,11 @@ const Detal_animal = ()=>{
             <p className="font-bold text-2xl">Atualizar</p>
             <img src="" width={50} alt="" />
         </div>
-        <form className="flex px-4 flex-col gap-5 w-full" onSubmit={updateForm}>
-            <div>
-                 <p className="font-bold text-2xl">{animal.nome ?? "Animal"}</p>
-                 <p>{peso || "Peso não informado"} Kg</p>
-                 <p>Última pesagem: {dataPesagem || "Sem data"}</p>
-            </div>
+       
+        <form className="flex px-4 flex-col gap-2 w-full" onSubmit={updateForm}>
+            <p className="font-bold text-2xl">{animal.nome ?? "Animal"}</p>
+            <p>Peso Atual  <span className="font-bold text-1xl">{peso ?? "Animal"} Kg</span></p>
+            <p>Perímetro Atual (cm)</p>
             <input
                 className="p-4 border-b-2 border-b-gray-400 focus:outline-none focus:ring-0"
                 type="number"
@@ -59,6 +101,55 @@ const Detal_animal = ()=>{
             <button type='submit' className="w-75 self-center bg-blue-700 active:bg-blue-600 cursor-pointer p-4 rounded-4xl font-bold text-amber-50 transition-transform duration-150">
                 Atualizar
             </button>
+            {dados.length == '' ? (
+                <p className="font-bold text-2xl self-center">Esse animal ainda não possue hitórico!</p>
+            ):(
+                <section>
+                <div>
+                    <p className="font-bold">GRÁFICO DE EVOLUÇÃO</p>
+                        <div style={{ width: '100%', height: 300 }}>
+                            <ResponsiveContainer>
+                                <BarChart data={dados}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="torax_history" tickFormatter={formatarData} />
+                                <YAxis/>
+                                <Tooltip />
+                                <Bar dataKey="peso_history" fill="#8884d8">
+                                    <LabelList dataKey="peso_history" position="top"/>
+                                </Bar>
+                                <Bar dataKey="torax_history" fill="#82ca9d">
+                                    <LabelList dataKey="torax_history" position="top"/>
+                                </Bar>
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+                <div className="w-[100%] mb-4">
+                    <p className="font-bold text-2xl">Hitórico</p>
+                    <table className="flex flex-col gap-1 max-w-[100%] border border-collapse bg-[#ffffff] shadow-[0 4px 6px ] rounded-[5px] overflow-hidden">
+                        <thead>
+                            <tr className="flex justify-around bg-mist-200">
+                                <th className="px-[12px] py-[15px]">Peso (Kg)</th>
+                                <th className="px-[12px] py-[15px]">Medida (cm)</th>
+                                <th className="px-[12px] py-[15px]">Data </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {dados.toReversed().map((item, index)=>(
+                                <tr className="flex justify-around border-t">
+                                    <td className="px-[12px] py-[15px]" key={index}>{item.peso_history || "Peso não informado"}</td>
+                                    <td className="px-[12px] py-[15px]" key={index}>{item.torax_history || "Peso não informado"}</td>
+                                    <td className="px-[12px] py-[15px]" key={index}>{ formatarData(item.data_history) || "Peso não informado"}</td>
+                                </tr>
+                            
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            )}
+            
+            
         </form>
         </>
     )

@@ -23,30 +23,72 @@ app.get("/",(req, res)=>{
 
 app.post("/cad-produtor", async(req, res)=>{
     try{     
-        const { nome, senha } = req.body;
+        const { nome, senha, email } = req.body ?? {};
+
+        if (!nome || !senha) {
+            return res.status(400).json({ erro: 'Nome e senha são obrigatórios' });
+        }
+
         const resultado = await pool.query(`
-            insert into produtor(name_user, senha)
-            values ($1, $2) 
+            insert into produtor(name_user, senha, email)
+            values ($1, $2, $3) 
             returning *    
         `,
-        [nome, senha]
+        [String(nome).trim(), String(senha).trim(), String(email).trim()]
         );
-        res.status(201).json(resultado.rows[0]);
+        return res.status(201).json(resultado.rows[0]);
 
     } catch(erro){
         console.error(erro);
 
-        res.status(500).json({
-            erro: "Erro ao cadastrar aluno"
+        return res.status(500).json({
+            erro: "Erro ao cadastrar produtor"
         });
     }
 });
+
+
+
+app.post('/up-animal', async(req, res)=>{
+    try {
+        const {perimetro, peso, id} = req.body
+        
+       // const definir_genero = genero === 'macho' ? true : genero === 'femea' ? false : null;
+        const resultado = await pool.query(`
+            insert into historico (torax_history, peso_history, data_history, animal_id)
+            values ($1, $2, CURRENT_DATE, $3)
+            returning *
+        `,[perimetro, peso, id]
+        );
+
+        const up = await pool.query(`
+                update animal 
+                set 
+                    torax = $1, 
+                    peso = $2, 
+                    data_pesagem = CURRENT_DATE 
+                where id = $3
+                returning *
+        `,[perimetro, peso, id]);
+
+        return res.status(201).json({
+            historico: resultado.rows[0],
+            animal: up.rows[0]
+        });
+
+    } catch (error) {
+        console.log(error)
+    }
+})
+
 app.post('/cad-animal', async (req, res) => {
     try {
-        const { nome, peso, perimetro, genero, produtor_id } = req.body;
+        const { nome, peso, perimetro, genero, produtor_id } = req.body ?? {};
+        const pesoNumero = Number(peso);
+        const perimetroNumero = Number(perimetro);
 
-        if (!nome || !perimetro || !produtor_id) {
-            return res.status(400).json({ erro: 'Dados obrigatórios ausentes' });
+        if (!nome || !produtor_id || Number.isNaN(perimetroNumero) || perimetroNumero <= 0 || Number.isNaN(pesoNumero) || pesoNumero <= 0) {
+            return res.status(400).json({ erro: 'Dados obrigatórios ausentes ou inválidos' });
         }
 
         const definir_genero = genero === 'macho' ? true : genero === 'femea' ? false : null;
@@ -55,10 +97,21 @@ app.post('/cad-animal', async (req, res) => {
             values ($1, $2, $3, CURRENT_DATE, $4, $5)
             returning *
         `,
-        [nome, peso, perimetro, definir_genero, produtor_id]
+        [String(nome).trim(), pesoNumero, perimetroNumero, definir_genero, Number(produtor_id)]
         );
+        const novoAnimal = resultado.rows[0]
+        const novoId = novoAnimal.id
+        const historico = await pool.query(`
+            insert into historico (torax_history, peso_history, data_history, animal_id)
+            values ($1, $2, CURRENT_DATE, $3)
+            returning *  
+        `,
+        [perimetroNumero, pesoNumero, novoId]);
 
-        return res.status(201).json(resultado.rows[0]);
+        return res.status(201).json({
+            resultado: resultado.rows[0],
+            historico: historico.rows[0]
+        });
     } catch (erro) {
         console.error(erro);
         return res.status(500).json({ erro: 'Erro ao cadastrar animal' });
@@ -68,12 +121,27 @@ app.get('/animais', async(req, res)=>{
     try {
         const { produtor_id } = req.query;
         const resultado = await pool.query(
-            `select * from animal where produtor_id = $1`, [produtor_id]
+            `select distinct on (nome) * 
+             from animal 
+             where produtor_id = $1
+             order by nome, id desc`, [produtor_id]
         );
         res.json(resultado.rows)
 
     } catch (error) {
         console.log('Erro ao buscar animais desse produtor!',error)
+    }
+});
+
+app.get('/listar-animal', async(req, res)=>{
+    try {
+        const { animal_id } = req.query;
+        const resultado = await pool.query(
+            `select * from historico where animal_id = $1`, [animal_id]
+        );
+        res.json(resultado.rows)
+    } catch (error) {
+        console.log("Erro ao buscar histórico", error)
     }
 });
 

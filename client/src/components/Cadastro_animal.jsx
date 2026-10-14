@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import arrowLeft from '../assets/icons/arrow-left-svgrepo-com.svg'
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useCalculoDePeso } from '../hooks/useCalculoDePeso';
 
 const Cadastro_animal = () => {
     const navigate = useNavigate();
@@ -22,50 +23,50 @@ const Cadastro_animal = () => {
             [name]: value,
         }));
     };
-    const calculoDePeso = (perimetro, genero) => {
-        console.log(perimetro, genero)
-        if(perimetro >= 174 && perimetro <= 182 && genero == 'macho'){
-            const resultado = perimetro * 2.8
-            return resultado
-        } else if(perimetro >= 186 && perimetro <= 189 && genero == 'femea'){
-            const resultado = perimetro * 2.8
-            return resultado
-        } else if(perimetro >= 147 && perimetro <= 169 && genero == 'femea'){
-            const resultado = 65.36 - (1.966*perimetro)+(0.01959*(perimetro*perimetro))+(0.00001691*(perimetro*perimetro*perimetro))
-            return resultado
-        } 
-    }
+    
     const validacaoForm = async(event) => {
         event.preventDefault();
 
-        if (Number(inputs.perimetro) >= 1000 || Number(inputs.perimetro) <= 60) {
+        const perimetroNumero = Number(inputs.perimetro);
 
+        if (Number.isNaN(perimetroNumero) || perimetroNumero >= 1000 || perimetroNumero <= 60) {
             setInputs((prev) => ({
                 ...prev,
                 perimetro: ''
             }));
             alert('Válido somente entre 60 e 999!');
             return;
-        } else {
-             console.log(inputs);
-            
-            const pesoCalculado = calculoDePeso(inputs.perimetro, inputs.genero)
+        }
 
-             const animais = {
-                nome: inputs.nome,
-                perimetro: inputs.perimetro,
-                genero: inputs.genero,
-                produtor_id: inputs.produtor_id, 
-                peso: pesoCalculado
-             }
-             const respost = await fetch("http://localhost:3000/cad-animal", {
+        const pesoCalculado = useCalculoDePeso(perimetroNumero, inputs.genero);
+
+        if (pesoCalculado === '' || Number.isNaN(Number(pesoCalculado))) {
+            alert('Não foi possível calcular o peso para esse perímetro e gênero.');
+            return;
+        }
+
+        const animais = {
+            nome: inputs.nome.trim(),
+            perimetro: perimetroNumero,
+            genero: inputs.genero,
+            produtor_id: inputs.produtor_id,
+            peso: Number(pesoCalculado)
+        }
+
+        try {
+            const respost = await fetch("http://localhost:3000/cad-animal", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify(animais)
-                
             });
+
+            if (!respost.ok) {
+                const erroResposta = await respost.json().catch(() => ({ erro: 'Erro ao cadastrar animal' }));
+                alert(erroResposta.erro || 'Erro ao cadastrar animal');
+                return;
+            }
 
             navigate('/page_perfil', {
                 state: {
@@ -74,9 +75,10 @@ const Cadastro_animal = () => {
                     senha: perfilState.senha,
                 }
             });
+        } catch (erro) {
+            console.error(erro);
+            alert('Não foi possível salvar o animal.');
         }
-
-       
     };
 
     function retornarAoPerfil() {
@@ -99,6 +101,7 @@ const Cadastro_animal = () => {
             <form className="flex px-4 flex-col gap-5 w-[100%]" onSubmit={validacaoForm}>
                <input className="p-4 border-b-2 border-b-gray-400 focus:outline-none focus:ring-0" type="text" placeholder="Nome do Animal" name='nome' onChange={pegarDados} value={inputs.nome} required/>
                 <input className="p-4 border-b-2 border-b-gray-400 focus:outline-none focus:ring-0" type="number" placeholder="Perímetro em centimentros (cm)" name='perimetro' onChange={pegarDados} value={inputs.perimetro} required/>
+                <label htmlFor="">Sexo</label>
                 <select name="genero" onChange={pegarDados} value={inputs.genero} required>
                     <option value=""></option>
                     <option value="macho">Macho</option>
