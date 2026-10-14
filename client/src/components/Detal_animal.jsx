@@ -20,7 +20,7 @@ const Detal_animal = ()=>{
     const animal = perfilState.animal ?? {};
 
     const [dados, setDados] = useState([])
-    const [perimetro, setPerimetro] = useState()
+    const [perimetro, setPerimetro] = useState(animal.torax)
     const [nome, setNome] = useState(animal.nome)
     const [peso, setPeso] = useState(animal.peso)
     const [produtor_id, setProdutor_id] = useState(animal.produtor_id ?? "")
@@ -43,7 +43,7 @@ const Detal_animal = ()=>{
             peso: calcularNovoPeso,
             id: animal.id
         }
-
+        setPerimetro(animais.perimetro)
         const respost = await fetch("http://localhost:3000/up-animal", {
             method: "POST",
             headers: {
@@ -51,6 +51,7 @@ const Detal_animal = ()=>{
             },
             body: JSON.stringify(animais)
         });
+        
 
     }
 
@@ -72,8 +73,8 @@ const Detal_animal = ()=>{
         });
     }
 
-    const formatarData = () => {
-        const data = new Date()
+    const formatarData = (dataATU) => {
+        const data = new Date(dataATU)
         return data.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
     }
    
@@ -111,7 +112,7 @@ const Detal_animal = ()=>{
                             <ResponsiveContainer>
                                 <BarChart data={dados}>
                                 <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="torax_history" tickFormatter={formatarData} />
+                                <XAxis dataKey="data_history" tickFormatter={formatarData} />
                                 <YAxis/>
                                 <Tooltip />
                                 <Bar dataKey="peso_history" fill="#8884d8">
