@@ -32,7 +32,7 @@ const Detal_animal = ()=>{
         setPeso(animal.peso ?? "")
         setDataPesagem(animal.data_pesagem ?? "")
         listarHistorico()
-    }, [animal])
+    }, [animal]);
 
     async function updateForm(event) {
         event.preventDefault();
@@ -43,7 +43,7 @@ const Detal_animal = ()=>{
             peso: calcularNovoPeso,
             id: animal.id
         }
-        setPerimetro(animais.perimetro)
+        setPerimetro(perimetro)
         const respost = await fetch("http://localhost:3000/up-animal", {
             method: "POST",
             headers: {

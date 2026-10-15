@@ -132,6 +132,17 @@ app.get('/animais', async(req, res)=>{
         console.log('Erro ao buscar animais desse produtor!',error)
     }
 });
+app.get('/deletar-animal', async(req, res)=>{
+    try {
+        const { id } = req.query;
+        const result = await pool.query(
+            `delete from animal where id = $1`, [id]
+        );
+        res.json(result.rows)
+    } catch (error) {
+        console.error(error)
+    }
+});
 
 app.get('/listar-animal', async(req, res)=>{
     try {

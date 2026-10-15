@@ -1,6 +1,8 @@
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import btnSair from "../assets/icons/botao-de-energia.png"
+import icoLixo from "../assets/icons/deposito-de-lixo.png"
+import { func } from "prop-types";
 
 const Page__perfil = () => {
     const location = useLocation();
@@ -77,7 +79,21 @@ const Page__perfil = () => {
         })
     }
 
+    async function deletarRegistro(id){
+        let resultado = confirm('Você irá Apagar esse Registro?')
+        if(resultado){
+            try {
+                const resposta = await fetch(`http://localhost:3000/deletar-animal?id=${id}`);
+                
+                alert('Animal deletado')
+            } catch (error) {
+                console.log(error)
+            }
+        }
+    }
+
     function sair(){
+        setCarregando(true);
         navigate("/login")
     }
     
@@ -98,19 +114,24 @@ const Page__perfil = () => {
                     {dados.map((animal)=>{
                         
                         return(
-                        <div onClick={()=>(pageDetal(animal))} key={animal.id} className="rounded-2xl cursor-pointer bg-white p-5 shadow-sm border border-stone-200 flex justify-between" >
-                            <div className="font-bold mr-40">
-                                <p>Desc.</p>
-                                <p>Peso</p>
-                                <p>Perímetro</p>
-                                <p>Sexo</p>
+                        <div key={animal.id} className="rounded-2xl  bg-white p-5 shadow-sm border border-stone-200 " >
+                            
+                            <div onClick={()=>(pageDetal(animal))}  className="cursor-pointer flex justify-between">
+                                 <div className="font-bold mr-40">
+                                    <p>Desc.</p>
+                                    <p>Peso</p>
+                                    <p>Perímetro</p>
+                                    <p>Sexo</p>
+                                    
+                                </div>
+                                <div className="">
+                                    <p className="rounded-[3px] p-1 font-bold bg-blue-700 text-amber-50">{animal.nome}</p>
+                                    <p>{animal.peso} <span className="font-bold">kg</span></p>
+                                    <p>{animal.torax} <span className="font-bold">cm</span></p>
+                                    <p>{animal.genero == true ? 'Macho':'Femea'}</p>
+                                </div>
                             </div>
-                            <div className="">
-                                <p className="rounded-[3px] p-1 font-bold bg-blue-700 text-amber-50">{animal.nome}</p>
-                                <p>{animal.peso} <span className="font-bold">kg</span></p>
-                                <p>{animal.torax} <span className="font-bold">cm</span></p>
-                                <p>{animal.genero == true ? 'Macho':'Femea'}</p>
-                            </div> 
+                            <img onClick={()=>(deletarRegistro(animal.id))} src={icoLixo} className="w-7 cursor-pointer" alt="" />
                         </div>    
                         )
                     })}
