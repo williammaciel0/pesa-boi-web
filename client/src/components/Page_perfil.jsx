@@ -2,7 +2,7 @@ import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import btnSair from "../assets/icons/botao-de-energia.png"
 import icoLixo from "../assets/icons/deposito-de-lixo.png"
-import { func } from "prop-types";
+import utilizador from "../assets/icons/utilizador.png"
 
 const Page__perfil = () => {
     const location = useLocation();
@@ -12,9 +12,7 @@ const Page__perfil = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-
         const id = location.state?.id;
-
         if (!id) {
             setErro("Perfil não encontrado.");
             return;
@@ -64,6 +62,7 @@ const Page__perfil = () => {
                 id: location.state?.id,
                 nome: location.state?.nome,
                 senha: location.state?.senha,
+                email: location.state?.email
             }
         })
     }
@@ -74,10 +73,22 @@ const Page__perfil = () => {
                 id: location.state?.id,
                 nome: location.state?.nome,
                 senha: location.state?.senha,
+                email: location.state?.email,
                 animal: animal
             }
         })
     }
+
+    function perfilProdutor(){
+        navigate("/perfil_produtor", {
+            state: {
+                id: location.state?.id,
+                nome: location.state?.nome,
+                email: location.state?.email,
+                senha: location.state?.senha,
+            }
+        });
+    };
 
     async function deletarRegistro(id){
         let resultado = confirm('Você irá Apagar esse Registro?')
@@ -93,16 +104,23 @@ const Page__perfil = () => {
     }
 
     function sair(){
-        setCarregando(true);
-        navigate("/login")
+        let resultado = confirm('Desenja realmente sair?')
+        if (resultado) {
+            setCarregando(true);
+            navigate("/login")
+        }
     }
     
     return (
         <div className="min-h-screen bg-stone-100 p-6">
             <div className="max-w-5xl mx-auto flex flex-col justify-center">
-                <header className="mb-8 rounded-2xl bg-gradient-to-r from-emerald-600 to-green-500 p-6 text-white shadow-lg">
+                <header className="mb-8 rounded-2xl bg-gradient-to-r from-emerald-600 to-green-500 p-6 text-white shadow-lg flex justify-between">
+                <div>
                     <p className="text-sm uppercase tracking-[0.2em] opacity-80">Perfil</p>
                     <h1 className="mt-2 text-3xl font-bold">{nomeProdutor}</h1>
+                </div>
+                <img src={utilizador} onClick={()=>{perfilProdutor()}} className="w-15 h-15 cursor-pointer" alt="" />
+            
                 </header>
 
                 {dados.length === 0 ? (
@@ -125,7 +143,7 @@ const Page__perfil = () => {
                                     
                                 </div>
                                 <div className="">
-                                    <p className="rounded-[3px] p-1 font-bold bg-blue-700 text-amber-50">{animal.nome}</p>
+                                    <p className="rounded-[3px] p-1 font-bold bg-blue-700 text-amber-50 ">{animal.nome}</p>
                                     <p>{animal.peso} <span className="font-bold">kg</span></p>
                                     <p>{animal.torax} <span className="font-bold">cm</span></p>
                                     <p>{animal.genero == true ? 'Macho':'Femea'}</p>

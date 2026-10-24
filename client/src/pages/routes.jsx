@@ -3,6 +3,7 @@ import { Cadastro_animal } from "../components/Cadastro_animal";
 import { Login } from "../components/Login";
 import { Page__perfil } from "../components/Page_perfil";
 import { Detal_animal } from "../components/Detal_animal";
+import { Perfil_produtor } from "../components/Perfil_produtor";
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
@@ -14,7 +15,8 @@ const AppRoutes = () => {
                 <Route exact path="/cad_animal" element={<Cadastro_animal/>} />
                 <Route exact path="/login" element={<Login/>} />
                 <Route exact path="/page_perfil" element={<Page__perfil/>} />                
-                <Route exact path="/detal_animal" element={<Detal_animal/>} />                
+                <Route exact path="/detal_animal" element={<Detal_animal/>} />
+                <Route exact path="/perfil_produtor" element={<Perfil_produtor/>} />                
             </Routes>
         </BrowserRouter>
     )

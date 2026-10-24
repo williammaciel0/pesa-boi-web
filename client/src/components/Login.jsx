@@ -6,7 +6,7 @@ const Login = () => {
     const [ senha, setSenha ] = useState("")
     const [ statusUser, setStatusUser ] = useState("")
     const navigate = useNavigate()
-
+   
     async function validarLogin(event) {
         event.preventDefault();
         try {
@@ -26,7 +26,8 @@ const Login = () => {
                 state: {
                     id: dados[0].id,
                     nome: dados[0].name_user,
-                    senha: dados[0].senha
+                    senha: dados[0].senha,
+                    email: dados[0].email,
                 }
             })
 

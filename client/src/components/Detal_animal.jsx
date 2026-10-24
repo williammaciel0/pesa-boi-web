@@ -14,8 +14,8 @@ import {
 } from 'recharts';
 
 const Detal_animal = ()=>{
-    const location = useLocation()
-    const navigate = useNavigate()
+    const location = useLocation();
+    const navigate = useNavigate();
     const perfilState = location.state ?? {};
     const animal = perfilState.animal ?? {};
 
@@ -38,12 +38,12 @@ const Detal_animal = ()=>{
         event.preventDefault();
         const calcularNovoPeso = await useCalculoDePeso(perimetro, genero)
         setPeso(calcularNovoPeso)
+        setPerimetro(event.target.value)
         const animais = {
             perimetro: perimetro,
             peso: calcularNovoPeso,
             id: animal.id
         }
-        setPerimetro(perimetro)
         const respost = await fetch("http://localhost:3000/up-animal", {
             method: "POST",
             headers: {
@@ -60,7 +60,6 @@ const Detal_animal = ()=>{
         const resposta = await fetch(`http://localhost:3000/listar-animal?animal_id=${animal_id}`)
         const dadosApi = await resposta.json();
         setDados(Array.isArray(dadosApi) ? dadosApi : [])
-        console.log(dadosApi)
     }
 
     function retornarAoPerfil() {
@@ -69,6 +68,7 @@ const Detal_animal = ()=>{
                 id: perfilState.id,
                 nome: perfilState.nome,
                 senha: perfilState.senha,
+                email: perfilState.email
             }
         });
     }
@@ -86,8 +86,9 @@ const Detal_animal = ()=>{
             <img src="" width={50} alt="" />
         </div>
        
-        <form className="flex px-4 flex-col gap-2 w-full" onSubmit={updateForm}>
+        <form className="flex p-4  flex-col gap-2 w-full" onSubmit={updateForm}>
             <p className="font-bold text-2xl">{animal.nome ?? "Animal"}</p>
+            <p className="text-sm uppercase tracking-[0.2em] opacity-80">{genero}</p>
             <p>Peso Atual  <span className="font-bold text-1xl">{peso ?? "Animal"} Kg</span></p>
             <p>Perímetro Atual (cm)</p>
             <input
@@ -139,7 +140,7 @@ const Detal_animal = ()=>{
                             {dados.toReversed().map((item, index)=>(
                                 <tr className="flex justify-around border-t">
                                     <td className="px-[12px] py-[15px]" key={index}>{item.peso_history || "Peso não informado"}</td>
-                                    <td className="px-[12px] py-[15px]" key={index}>{item.torax_history || "Peso não informado"}</td>
+                                    <td className="px-[12px] py-[15px]" key={index}>{item.torax_history || "Peso não informado"} cm</td>
                                     <td className="px-[12px] py-[15px]" key={index}>{ formatarData(item.data_history) || "Peso não informado"}</td>
                                 </tr>
                             

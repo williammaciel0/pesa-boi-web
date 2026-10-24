@@ -87,6 +87,7 @@ const Cadastro_animal = () => {
                 id: perfilState.id,
                 nome: perfilState.nome,
                 senha: perfilState.senha,
+                email: perfilState.email
             }
         });
     }

@@ -51,13 +51,25 @@ app.post("/cad-produtor", async(req, res)=>{
     }
 });
 
-
+app.post('/up-perfilprodutor', async(req, res)=>{
+    try {
+        const {id, nome, email, senha} = req.body
+        const up = await pool.query(`
+           update produtor 
+           set 
+           name_user = $1, senha = $2, email = $3
+           where id = $4
+           returning *
+        `,[nome, senha, email, id]);
+        return res.status(201).json(up.rows[0])
+    } catch (error) {
+        console.log(error)
+    }
+});
 
 app.post('/up-animal', async(req, res)=>{
     try {
         const {perimetro, peso, id} = req.body
-        
-       // const definir_genero = genero === 'macho' ? true : genero === 'femea' ? false : null;
         const resultado = await pool.query(`
             insert into historico (torax_history, peso_history, data_history, animal_id)
             values ($1, $2, CURRENT_DATE, $3)
