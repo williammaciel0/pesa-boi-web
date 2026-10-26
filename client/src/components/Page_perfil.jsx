@@ -2,7 +2,7 @@ import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import btnSair from "../assets/icons/botao-de-energia.png"
 import icoLixo from "../assets/icons/deposito-de-lixo.png"
-import utilizador from "../assets/icons/utilizador.png"
+import utilizador from "../assets/icons/user.png"
 
 const Page__perfil = () => {
     const location = useLocation();
@@ -119,7 +119,7 @@ const Page__perfil = () => {
                     <p className="text-sm uppercase tracking-[0.2em] opacity-80">Perfil</p>
                     <h1 className="mt-2 text-3xl font-bold">{nomeProdutor}</h1>
                 </div>
-                <img src={utilizador} onClick={()=>{perfilProdutor()}} className="w-15 h-15 cursor-pointer" alt="" />
+                <img src={utilizador} onClick={()=>{perfilProdutor()}} className="w-20 h-20 cursor-pointer" alt="" />
             
                 </header>
 
