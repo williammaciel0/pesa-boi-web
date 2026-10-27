@@ -1,25 +1,27 @@
 const express = require('express');
 const cors = require('cors');
+const pool = require("./db");
 
-const { Pool } = require('pg');
+// const { Pool } = require('pg');
 require('dotenv').config()
 const app = express()
 
 app.use(cors({
     origin: [
         "http://localhost:5173",
-        "https://pesa-boi-web.vercel.app"
-    ]
+        process.env.FRONTEND_URL
+    ].filter(Boolean)
 }));
 app.use(express.json());
 
-const pool = new Pool({
-    user: process.env.DB_USER,
-    host: process.env.DB_HOST,
-    database: process.env.DB_DATABASE,
-    password: process.env.DB_PASSWORD,
-    port: process.env.DB_PORT
-});
+
+// const pool = new Pool({
+//     user: process.env.DB_USER,
+//     host: process.env.DB_HOST,
+//     database: process.env.DB_DATABASE,
+//     password: process.env.DB_PASSWORD,
+//     port: process.env.DB_PORT
+// });
 
 app.get("/",(req, res)=>{
     res.send("Servidor funcionando!")

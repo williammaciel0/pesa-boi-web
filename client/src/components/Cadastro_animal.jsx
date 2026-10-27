@@ -3,6 +3,7 @@ import arrowLeft from '../assets/icons/arrow-left-svgrepo-com.svg'
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useCalculoDePeso } from '../hooks/useCalculoDePeso';
 
+
 const Cadastro_animal = () => {
     const navigate = useNavigate();
     const location = useLocation();
