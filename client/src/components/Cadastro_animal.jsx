@@ -55,7 +55,7 @@ const Cadastro_animal = () => {
         }
 
         try {
-            const respost = await fetch("http://localhost:3000/cad-animal", {
+            const respost = await fetch(`${import.meta.env.VITE_API_URL}/cad-animal`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

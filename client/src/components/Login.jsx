@@ -11,7 +11,7 @@ const Login = () => {
         event.preventDefault();
         try {
             const result = await fetch(
-                `http://localhost:3000/produtor?nome=${nome}&senha=${senha}`
+                `${import.meta.env.VITE_API_URL}/produtor?nome=${nome}&senha=${senha}`
             );
             const dados = await result.json()
 

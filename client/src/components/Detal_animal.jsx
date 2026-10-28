@@ -44,7 +44,7 @@ const Detal_animal = ()=>{
             peso: calcularNovoPeso,
             id: animal.id
         }
-        const respost = await fetch("http://localhost:3000/up-animal", {
+        const respost = await fetch(`${import.meta.env.VITE_API_URL}/up-animal`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -57,7 +57,7 @@ const Detal_animal = ()=>{
 
     async function listarHistorico(){
         const animal_id = animal.id
-        const resposta = await fetch(`http://localhost:3000/listar-animal?animal_id=${animal_id}`)
+        const resposta = await fetch(`${import.meta.env.VITE_API_URL}/listar-animal?animal_id=${animal_id}`)
         const dadosApi = await resposta.json();
         setDados(Array.isArray(dadosApi) ? dadosApi : [])
     }

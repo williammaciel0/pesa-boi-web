@@ -23,7 +23,7 @@ const Page__perfil = () => {
                 setCarregando(true);
                 setErro("");
 
-                const result = await fetch(`http://localhost:3000/animais?produtor_id=${id}`);
+                const result = await fetch(`${import.meta.env.VITE_API_URL}/animais?produtor_id=${id}`);
                 const dadosApi = await result.json();
                 setDados(Array.isArray(dadosApi) ? dadosApi : []);
             } catch (error) {
@@ -94,7 +94,7 @@ const Page__perfil = () => {
         let resultado = confirm('Você irá Apagar esse Registro?')
         if(resultado){
             try {
-                const resposta = await fetch(`http://localhost:3000/deletar-animal?id=${id}`);
+                const resposta = await fetch(`${import.meta.env.VITE_API_URL}/deletar-animal?id=${id}`);
                 
                 alert('Animal deletado')
             } catch (error) {

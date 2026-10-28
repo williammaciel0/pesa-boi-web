@@ -31,7 +31,7 @@ const Cadastro_produtor = () => {
         }
 
         try {
-            const respost = await fetch("http://localhost:3000/cad-produtor", {
+            const respost = await fetch(`${import.meta.env.VITE_API_URL}/cad-produtor`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

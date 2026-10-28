@@ -22,7 +22,7 @@ const Perfil_produtor = () => {
             email: email,
             senha: senha
         }
-        const respost = await fetch("http://localhost:3000/up-perfilprodutor", {
+        const respost = await fetch(`${import.meta.env.VITE_API_URL}/up-perfilprodutor`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -70,7 +70,7 @@ const Perfil_produtor = () => {
                     <label htmlFor="">Email de Usuário</label>
                     <input className='p-3 bg-blue-100 rounded-2xl text-gray-600' type="text" value={email} onChange={(event)=>setEmail(event.target.value)} required />
                     <label htmlFor="">Senha</label>
-                    <input className='p-3 bg-blue-100 rounded-2xl text-gray-600' type="password" value={senha} onChange={(event)=>setSenha(event.target.value)} required />
+                    <input className='p-3 bg-blue-100 rounded-2xl text-gray-600' type="text" value={senha} onChange={(event)=>setSenha(event.target.value)} required />
                     <button type='submit' className="w-[300px] self-center bg-blue-700 active:bg-blue-600 cursor-pointer p-4 rounded-4xl font-bold text-amber-50 transition-transform duration-150 shadow-2xl">Alterar</button>
                 </form>
             </div>
