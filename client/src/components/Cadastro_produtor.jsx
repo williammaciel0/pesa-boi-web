@@ -55,7 +55,7 @@ const Cadastro_produtor = () => {
     return(
         <>
         <div className="flex justify-between items-center w-[100%] p-4 shadow-md">
-            <Link to='/login'>
+            <Link to='/'>
                 <img className='cursor-pointer' src={arrowLeft} width={30} />
             </Link>
             <p className="font-bold text-2xl">Produtor</p>
