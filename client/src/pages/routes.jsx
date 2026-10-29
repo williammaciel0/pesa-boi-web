@@ -11,9 +11,9 @@ const AppRoutes = () => {
     return(
         <BrowserRouter>
             <Routes>
-                <Route exact path="/cad_cadastro" element={<Cadastro_produtor/>} />
+                <Route exact path="/" element={<Login/>} />
+                <Route exact path="/cad_cadastro" element={<Cadastro_produtor/>}/>
                 <Route exact path="/cad_animal" element={<Cadastro_animal/>} />
-                <Route exact path="/login" element={<Login/>} />
                 <Route exact path="/page_perfil" element={<Page__perfil/>} />                
                 <Route exact path="/detal_animal" element={<Detal_animal/>} />
                 <Route exact path="/perfil_produtor" element={<Perfil_produtor/>} />                

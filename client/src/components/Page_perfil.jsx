@@ -107,7 +107,7 @@ const Page__perfil = () => {
         let resultado = confirm('Desenja realmente sair?')
         if (resultado) {
             setCarregando(true);
-            navigate("/login")
+            navigate("/")
         }
     }
     
