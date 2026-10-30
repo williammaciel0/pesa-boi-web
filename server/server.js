@@ -54,8 +54,8 @@ app.post("/cad-produtor", async(req, res)=>{
         );
         return res.status(201).json(resultado.rows[0]);
 
-    } catch(erro){
-        console.error(erro);
+    } catch(error){
+        console.error(error);
 
         return res.status(500).json({
             erro: "Erro ao cadastrar produtor"
