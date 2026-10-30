@@ -51,7 +51,7 @@ const Cadastro_produtor = () => {
                 console.log("STATUS:", respost.status);
                 console.log("RESPOSTA DO SERVIDOR:", respostaErro);
 
-                alert(erroResposta.erro || 'Erro ao cadastrar produtor');
+                alert('Erro ao cadastrar produtor');
                 return;
             }
 
