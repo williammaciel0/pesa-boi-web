@@ -15,6 +15,15 @@ app.use(cors({
 }));
 app.use(express.json());
 
+app.use((req, res, next) => {
+    console.log("REQUISIÇÃO RECEBIDA:", {
+        metodo: req.method,
+        rota: req.url,
+        horario: new Date().toISOString()
+    });
+
+    next();
+});
 
 // const pool = new Pool({
 //     user: process.env.DB_USER,
