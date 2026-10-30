@@ -39,9 +39,19 @@ const Cadastro_produtor = () => {
                 body: JSON.stringify(produtor)
             });
 
+            // if (!respost.ok) {
+            //     const erroResposta = await respost.json().catch(() => ({ erro: 'Erro ao cadastrar produtor' }));
+            //     alert(erroResposta.erro || 'Erro ao cadastrar produtor');
+            //     return;
+            // }
+
             if (!respost.ok) {
-                const erroResposta = await respost.json().catch(() => ({ erro: 'Erro ao cadastrar produtor' }));
-                alert(erroResposta.erro || 'Erro ao cadastrar produtor');
+                const respostaErro = await respost.text();
+
+                console.log("STATUS:", respost.status);
+                console.log("RESPOSTA DO SERVIDOR:", respostaErro);
+
+                alert("Erro HTTP: " + respost.status);
                 return;
             }
 
