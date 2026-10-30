@@ -35,82 +35,82 @@ app.use((req, res, next) => {
 
 app.get("/",(req, res)=>{
     res.send("Servidor funcionando!")
-})
+});
 
-// app.post("/cad-produtor", async(req, res)=>{
-//     try{     
-//         const { nome, senha, email } = req.body ?? {};
-
-//         if (!nome || !senha) {
-//             return res.status(400).json({ erro: 'Nome e senha são obrigatórios' });
-//         }
-
-//         const resultado = await pool.query(`
-//             insert into produtor(name_user, senha, email)
-//             values ($1, $2, $3) 
-//             returning *    
-//         `,
-//         [String(nome).trim(), String(senha).trim(), String(email).trim()]
-//         );
-//         return res.status(201).json(resultado.rows[0]);
-
-//     } catch(erro){
-//         console.error(erro);
-
-//         return res.status(500).json({
-//             erro: "Erro ao cadastrar produtor"
-//         });
-//     }
-// });
-
-app.post("/cad-produtor", async (req, res) => {
-    console.log("Recebida requisição de cadastro");
-
-    try {
+app.post("/cad-produtor", async(req, res)=>{
+    try{     
         const { nome, senha, email } = req.body ?? {};
 
-        if (!nome?.trim() || !senha?.trim() || !email?.trim()) {
-            return res.status(400).json({
-                erro: "Nome, senha e email são obrigatórios"
-            });
+        if (!nome || !senha) {
+            return res.status(400).json({ erro: 'Nome e senha são obrigatórios' });
         }
 
-        console.log("Dados recebidos:", {
-            nome,
-            email,
-            senhaRecebida: Boolean(senha)
-        });
-
-        const resultado = await pool.query(
-            `INSERT INTO produtor (name_user, senha, email)
-             VALUES ($1, $2, $3)
-             RETURNING name_user, email`,
-            [
-                nome.trim(),
-                senha.trim(),
-                email.trim()
-            ]
+        const resultado = await pool.query(`
+            insert into produtor(name_user, senha, email)
+            values ($1, $2, $3) 
+            returning *    
+        `,
+        [String(nome).trim(), String(senha).trim(), String(email).trim()]
         );
-
-        console.log("Produtor cadastrado:", resultado.rows[0]);
-
         return res.status(201).json(resultado.rows[0]);
 
-    } catch (erro) {
-
-        console.error("ERRO AO CADASTRAR PRODUTOR:", {
-            mensagem: erro.message,
-            codigo: erro.code,
-            detalhe: erro.detail,
-            tabela: erro.table,
-            coluna: erro.column
-        });
+    } catch(erro){
+        console.error(erro);
 
         return res.status(500).json({
             erro: "Erro ao cadastrar produtor"
         });
     }
 });
+
+// app.post("/cad-produtor", async (req, res) => {
+//     console.log("Recebida requisição de cadastro");
+
+//     try {
+//         const { nome, senha, email } = req.body ?? {};
+
+//         if (!nome?.trim() || !senha?.trim() || !email?.trim()) {
+//             return res.status(400).json({
+//                 erro: "Nome, senha e email são obrigatórios"
+//             });
+//         }
+
+//         console.log("Dados recebidos:", {
+//             nome,
+//             email,
+//             senhaRecebida: Boolean(senha)
+//         });
+
+//         const resultado = await pool.query(
+//             `INSERT INTO produtor (name_user, senha, email)
+//              VALUES ($1, $2, $3)
+//              RETURNING name_user, email`,
+//             [
+//                 nome.trim(),
+//                 senha.trim(),
+//                 email.trim()
+//             ]
+//         );
+
+//         console.log("Produtor cadastrado:", resultado.rows[0]);
+
+//         return res.status(201).json(resultado.rows[0]);
+
+//     } catch (erro) {
+
+//         console.error("ERRO AO CADASTRAR PRODUTOR:", {
+//             mensagem: erro.message,
+//             codigo: erro.code,
+//             detalhe: erro.detail,
+//             tabela: erro.table,
+//             coluna: erro.column
+//         });
+
+//         return res.status(500).json({
+//             erro: "Erro ao cadastrar produtor"
+//         });
+//     }
+// });
 
 app.post('/up-perfilprodutor', async(req, res)=>{
     try {
