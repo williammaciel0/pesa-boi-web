@@ -38,7 +38,7 @@ const Cadastro_produtor = () => {
                 },
                 body: JSON.stringify(produtor)
             });
-
+            console.log(respost)
             // if (!respost.ok) {
             //     const erroResposta = await respost.json().catch(() => ({ erro: 'Erro ao cadastrar produtor' }));
             //     alert(erroResposta.erro || 'Erro ao cadastrar produtor');
