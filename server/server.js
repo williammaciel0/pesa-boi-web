@@ -36,7 +36,35 @@ app.use((req, res, next) => {
 app.get("/",(req, res)=>{
     res.send("Servidor funcionando!")
 });
+app.get("/teste-banco", async (req, res) => {
+    try {
+        const resultado = await pool.query(`
+            SELECT
+                NOW() AS horario,
+                current_database() AS banco,
+                to_regclass('public.produtor') AS tabela_produtor
+        `);
 
+        console.log("TESTE DO BANCO:", resultado.rows[0]);
+
+        return res.status(200).json({
+            conectado: true,
+            resultado: resultado.rows[0]
+        });
+
+    } catch (erro) {
+        console.error("ERRO NO TESTE DO BANCO:", {
+            mensagem: erro.message,
+            codigo: erro.code
+        });
+
+        return res.status(500).json({
+            conectado: false,
+            erro: erro.message,
+            codigo: erro.code
+        });
+    }
+});
 app.post("/cad-produtor", async(req, res)=>{
     try{     
         const { nome, senha, email } = req.body ?? {};
