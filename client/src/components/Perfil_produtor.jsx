@@ -8,7 +8,6 @@ const Perfil_produtor = () => {
     const location = useLocation();
     const navigate = useNavigate()
     
-    console.log(location.state)
     const [id, setId] = useState(location.state?.id || '');
     const [nome, setNome] = useState(location.state?.nome || '');
     const [email, setEmail] = useState(location.state?.email || '');
