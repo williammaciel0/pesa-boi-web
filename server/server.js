@@ -69,14 +69,14 @@ app.post("/cad-produtor", async(req, res)=>{
     try{     
         const { nome, senha, email } = req.body ?? {};
 
-        if (!nome || !senha) {
-            return res.status(400).json({ erro: 'Nome e senha são obrigatórios' });
+        if (!nome || !senha || !email) {
+            return res.status(400).json({ erro: 'Nome, senha e email são obrigatórios' });
         }
 
         const resultado = await pool.query(`
             insert into produtor(name_user, senha, email)
             values ($1, $2, $3) 
-            returning *    
+            returning *
         `,
         [String(nome).trim(), String(senha).trim(), String(email).trim()]
         );
