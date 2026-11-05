@@ -132,24 +132,32 @@ const Page__perfil = () => {
                     {dados.map((animal)=>{
                         
                         return(
-                        <div key={animal.id} className="rounded-2xl  bg-white p-5 shadow-sm border border-stone-200 " >
+                        <div key={animal.id} className="w-full rounded-2xl bg-white p-5 shadow-sm border border-stone-200" >
                             
-                            <div onClick={()=>(pageDetal(animal))}  className="cursor-pointer flex justify-between">
-                                 <div className="font-bold mr-40">
+                            <div onClick={()=>(pageDetal(animal))} className="flex w-full cursor-pointer items-start justify-between gap-4">
+                                <div className="min-w-[90px] font-bold text-stone-700">
                                     <p>Desc.</p>
                                     <p>Peso</p>
                                     <p>Perímetro</p>
                                     <p>Sexo</p>
-                                    
                                 </div>
-                                <div className="">
-                                    <p className="rounded-[3px] p-1 font-bold bg-blue-700 text-amber-50 ">{animal.nome}</p>
+
+                                <div className="flex min-w-0 flex-1 flex-col items-end text-right">
+                                    <p className="inline-block rounded-[3px] px-2 py-1 font-bold bg-blue-700 text-amber-50">{animal.nome}</p>
                                     <p>{animal.peso} <span className="font-bold">kg</span></p>
                                     <p>{animal.torax} <span className="font-bold">cm</span></p>
                                     <p>{animal.genero == true ? 'Macho':'Femea'}</p>
                                 </div>
                             </div>
-                            <img onClick={()=>(deletarRegistro(animal.id))} src={icoLixo} className="w-7 cursor-pointer" alt="" />
+
+                            <button
+                                type="button"
+                                onClick={()=>(deletarRegistro(animal.id))}
+                                className="mt-4 inline-flex cursor-pointer items-center justify-center rounded-full bg-red-500 p-2 text-white transition hover:bg-red-600"
+                                aria-label="Excluir animal"
+                            >
+                                <img src={icoLixo} className="w-7" alt="" />
+                            </button>
                         </div>    
                         )
                     })}
