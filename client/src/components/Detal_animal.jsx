@@ -64,6 +64,7 @@ const Detal_animal = ()=>{
 
     function retornarAoPerfil() {
         navigate('/page_perfil', {
+            replace: true,
             state: {
                 id: perfilState.id,
                 nome: perfilState.nome,

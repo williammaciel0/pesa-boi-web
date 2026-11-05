@@ -56,7 +56,7 @@ const Cadastro_produtor = () => {
             }
 
             alert('Produtor cadastrado com sucesso!');
-            navigate('/');
+            navigate('/', { replace: true });
         } catch (erro) {
             console.error(erro);
             alert('Não foi possível cadastrar o produtor.');

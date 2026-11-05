@@ -1,6 +1,8 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 
+const STORAGE_KEY = "pesa-boi-user";
+
 const Login = () => {
     const [ nome, setNome ] = useState("")
     const [ senha, setSenha ] = useState("")
@@ -22,13 +24,18 @@ const Login = () => {
                 setStatusUser('')
             }
 
+            const usuario = {
+                id: dados[0].id,
+                nome: dados[0].name_user,
+                senha: dados[0].senha,
+                email: dados[0].email,
+            };
+
+            sessionStorage.setItem(STORAGE_KEY, JSON.stringify(usuario));
+
             navigate('/page_perfil', {
-                state: {
-                    id: dados[0].id,
-                    nome: dados[0].name_user,
-                    senha: dados[0].senha,
-                    email: dados[0].email,
-                }
+                replace: true,
+                state: usuario,
             })
 
         } catch (erro) {

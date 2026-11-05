@@ -4,6 +4,8 @@ import btnSair from "../assets/icons/botao-de-energia.png"
 import icoLixo from "../assets/icons/deposito-de-lixo.png"
 import utilizador from "../assets/icons/user.png"
 
+const STORAGE_KEY = "pesa-boi-user";
+
 const Page__perfil = () => {
     const location = useLocation();
     const [dados, setDados] = useState([]);
@@ -12,9 +14,12 @@ const Page__perfil = () => {
     const navigate = useNavigate();
     
     useEffect(() => {
-        const id = location.state?.id;
+        const usuarioSalvo = sessionStorage.getItem(STORAGE_KEY);
+        const usuario = usuarioSalvo ? JSON.parse(usuarioSalvo) : null;
+        const id = location.state?.id ?? usuario?.id;
+
         if (!id) {
-            setErro("Perfil não encontrado.");
+            navigate("/", { replace: true });
             return;
         }
 
@@ -36,9 +41,11 @@ const Page__perfil = () => {
 
         buscarPerfil();
         
-    }, [location.state?.id]);
+    }, [location.state?.id, navigate]);
 
-    const nomeProdutor = location.state?.nome || "Produtor";
+    const usuarioSalvo = sessionStorage.getItem(STORAGE_KEY);
+    const usuario = usuarioSalvo ? JSON.parse(usuarioSalvo) : null;
+    const nomeProdutor = location.state?.nome ?? usuario?.nome ?? "Produtor";
 
     if (carregando) {
         return (
@@ -58,6 +65,7 @@ const Page__perfil = () => {
 
     function enviarDados(){
         navigate("/cad_animal", {
+            replace: true,
             state: {
                 id: location.state?.id,
                 nome: location.state?.nome,
@@ -69,6 +77,7 @@ const Page__perfil = () => {
 
     function pageDetal(animal){
         navigate("/detal_animal", {
+            replace: true,
             state: {
                 id: location.state?.id,
                 nome: location.state?.nome,
@@ -81,6 +90,7 @@ const Page__perfil = () => {
 
     function perfilProdutor(){
         navigate("/perfil_produtor", {
+            replace: true,
             state: {
                 id: location.state?.id,
                 nome: location.state?.nome,
@@ -106,8 +116,9 @@ const Page__perfil = () => {
     function sair(){
         let resultado = confirm('Desenja realmente sair?')
         if (resultado) {
+            sessionStorage.removeItem(STORAGE_KEY);
             setCarregando(true);
-            navigate("/")
+            navigate("/", { replace: true });
         }
     }
     

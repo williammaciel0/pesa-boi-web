@@ -30,6 +30,7 @@ const Perfil_produtor = () => {
         });
         
         navigate('/page_perfil', {
+            replace: true,
             state: {
                 id: perfil.id,
                 nome: perfil.nome,
@@ -41,6 +42,7 @@ const Perfil_produtor = () => {
 
     const retornarAoPerfil = ()=> {
         navigate('/page_perfil', {
+            replace: true,
             state: {
                 id: id,
                 nome: nome,
