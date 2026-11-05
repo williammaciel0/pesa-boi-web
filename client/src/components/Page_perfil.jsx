@@ -10,7 +10,7 @@ const Page__perfil = () => {
     const [carregando, setCarregando] = useState(false);
     const [erro, setErro] = useState("");
     const navigate = useNavigate();
-
+    
     useEffect(() => {
         const id = location.state?.id;
         if (!id) {
