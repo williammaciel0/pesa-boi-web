@@ -132,7 +132,7 @@ const Page__perfil = () => {
                     {dados.map((animal)=>{
                         
                         return(
-                        <div key={animal.id} className="w-full rounded-2xl bg-white p-5 shadow-sm border border-stone-200" >
+                        <div key={animal.id} className="w-full rounded-2xl bg-white p-5 shadow-sm border border-stone-200 hover:bg-amber-100" >
                             
                             <div onClick={()=>(pageDetal(animal))} className="flex w-full cursor-pointer items-start justify-between gap-4">
                                 <div className="min-w-[90px] font-bold text-stone-700">
